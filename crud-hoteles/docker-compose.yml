@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+      POSTGRES_DB: hotelesdb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - red-app
+
+  backend:
+    build: ./app
+    container_name: flask-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: hotelesdb
+      DB_USER: usuario
+      DB_PASSWORD: contraseña
+    networks:
+      - red-app
+
+volumes:
+  db-data:
+
+networks:
+  red-app:
