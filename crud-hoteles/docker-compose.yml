@@ -1,35 +1,35 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  db:
-    image: postgres:13
-    container_name: postgres-db
-    environment:
-      POSTGRES_USER: usuario
-      POSTGRES_PASSWORD: contraseña
-      POSTGRES_DB: hotelesdb
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - red-app
-
-  backend:
+  app:
     build: ./app
-    container_name: flask-backend
+    container_name: crud_app
     ports:
       - "5000:5000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=hoteles_db
+      - DB_USER=postgres
+      - DB_PASSWORD=PassDocker
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_NAME: hotelesdb
-      DB_USER: usuario
-      DB_PASSWORD: contraseña
     networks:
-      - red-app
+      - slc-red
 
-volumes:
-  db-data:
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      - POSTGRES_DB=hoteles_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=PassDocker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - slc-red
 
 networks:
-  red-app:
+  slc-red:
+
+volumes:
+  pgdata:
